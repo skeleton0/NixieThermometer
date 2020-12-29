@@ -16,17 +16,6 @@ void switchDigit(const int aPin, const int digit) {
 	if (digit >= 0 && digit < 10) {
 		for (int i = 0; i < 4; ++i) {
 			digitalWrite(aPin + i, digit & lround(pow(2, i)));
-			Serial.print("i: ");
-			Serial.print(i);
-			Serial.print(", digit: ");
-			Serial.print(digit);
-			Serial.print(", power: ");
-			Serial.println(lround(pow(2, i)));
-
-			Serial.print("Setting pin ");
-			Serial.print(aPin + i);
-			Serial.print(" to ");
-			Serial.println(digit & lround(pow(2, i)));
 		}
 	}
 }
@@ -47,13 +36,8 @@ void setup() {
 
 void loop() {
 	// put your main code here, to run repeatedly:
-	Serial.print("Requesting termperatures...");
 	sensors.requestTemperatures();
-	Serial.println("Done");
-
 	auto temp = sensors.getTempCByIndex(0);
-	Serial.print("Sensor returned: ");
-	Serial.println(temp);
 
 	auto roundedTemp = lround(temp);
 	if (temp != DEVICE_DISCONNECTED_C && roundedTemp != currentTemp) {
@@ -63,16 +47,8 @@ void loop() {
 			roundedTemp += 100;
 		}
 
-		auto firstDigit = roundedTemp / 10;
-		auto secondDigit = roundedTemp % 10;
-
-		Serial.print("First digit: ");
-		Serial.println(firstDigit);
-		Serial.print("Second digit: ");
-		Serial.println(secondDigit);
-
-		switchDigit(FIRST_DIGIT_A_PIN, firstDigit);
-		switchDigit(SECOND_DIGIT_A_PIN, secondDigit);
+		switchDigit(FIRST_DIGIT_A_PIN, roundedTemp / 10);
+		switchDigit(SECOND_DIGIT_A_PIN, roundedTemp % 10);
 	}
 
 	delay(1000);
