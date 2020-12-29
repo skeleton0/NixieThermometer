@@ -9,7 +9,7 @@
 
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
-long int currentTemp = 0;
+long int currentTemp{0};
 
 // Function assumes that BCD IC pins are connected to MCU pins contiguously (e.g. 2, 3, 4, 5)
 void switchDigit(const int aPin, const int digit) {
@@ -22,13 +22,16 @@ void switchDigit(const int aPin, const int digit) {
 
 void setup() {
 	// put your setup code here, to run once:
-	for (int i = 0; i < 4; ++i) {
+	for (int i{0}; i < 4; ++i) {
 		pinMode(FIRST_DIGIT_A_PIN + i, OUTPUT);
 		pinMode(SECOND_DIGIT_A_PIN + i, OUTPUT);
 	}
 
-	switchDigit(FIRST_DIGIT_A_PIN, 0);
-	switchDigit(SECOND_DIGIT_A_PIN, 0);
+	for (int i{9}; i >= 0; --i) {
+		switchDigit(FIRST_DIGIT_A_PIN, i);
+		switchDigit(SECOND_DIGIT_A_PIN, i);
+		delay(500);
+	}
 
 	Serial.begin(9600);
 	sensors.begin();
